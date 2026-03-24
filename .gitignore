@@ -1,0 +1,36 @@
+# ProductFlow_V5 — Git Ignore
+
+# Project directories (generated, variable per project)
+projects/*/logs/
+projects/*/code/
+projects/*/.env
+projects/*/*.local.json
+
+# OS Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+venv/
+
+# Temporary
+*.tmp
+*.bak
+.claude_session
+
+# Keep project structure but ignore data
+!projects/.gitkeep
