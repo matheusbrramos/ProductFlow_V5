@@ -90,6 +90,31 @@
 
 ---
 
+### CHUNK 2.3 — Subagentes Declarativos
+**Status:** 0/4 | Owner: Dev | Bloqueado por: CHUNK 2.2 | Est. 1.5h
+
+- [ ] Implementar `scripts/lib/subagents_orchestrator.py` | 1h | Dev
+- [ ] Criar `scripts/subagents_engine.sh` wrapper script | 30min | Dev
+- [ ] Gerar template `subagents.yaml` com config declarativa | 15min | Dev
+- [ ] Testar: rodar subagents_engine.sh e validar execução paralela | 15min | QA
+
+**Critério de sucesso:** YAML config define agentes, orchestrador executa paralelos + sequenciais corretamente
+
+---
+
+### CHUNK 2.4 — Logging de Contexto
+**Status:** 0/4 | Owner: Dev | Bloqueado por: CHUNK 2.3 | Est. 2h
+
+- [ ] Implementar `scripts/lib/context_logger.py` com JSONL logging | 1h | Dev
+- [ ] Adicionar análise agregada (por fase, por modelo) | 30min | Dev
+- [ ] Criar `scripts/context_logger.sh` com fallback para sem Python | 30min | Dev
+- [ ] Integrar context_logger em `orchestration_engine.sh` | 20min | Dev
+- [ ] Testar: rodar e validar que identifica phases críticas (> 25k, > 35k) | 20min | QA
+
+**Critério de sucesso:** Sistema registra token usage, gera relatório com alertas ⚠️/🔴 para phases grandes
+
+---
+
 ## 🟢 FASE 3: Loop de Aprendizado (Futuro)
 
 ### CHUNK 3.1 — Persistência de Decisões

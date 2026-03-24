@@ -377,7 +377,72 @@ CHUNK 1.5 (Feedback):
 
 ---
 
-## 8. Métricas e Health Check
+## 7. Orquestração de Subagentes (CHUNK 2.3)
+
+```
+subagents_engine.sh lê YAML config e coordena múltiplos agentes:
+
+subagents.yaml
+├── parallel:
+│   ├── research_agent (Claude Haiku, 8k tokens)
+│   └── prototype_agent (Claude Haiku, 8k tokens)
+│       [rodam juntos, sem dependência]
+│
+└── sequential:
+    ├── specs_validator (Claude Sonnet, 15k tokens)
+    │   [depends_on: prototype_agent]
+    │
+    └── feedback_processor (Claude Haiku, 10k tokens)
+        [depends_on: specs_validator]
+
+Orquestrador:
+1. Inicia agentes paralelos em threads
+2. Aguarda conclusão
+3. Inicia sequenciais em ordem de dependência
+4. Retorna relatório: {completed, tokens, timeline}
+
+Arquivo de execução: subagents_orchestrator.py
+- Lê YAML config
+- Executa via ThreadPoolExecutor
+- Respeita depends_on
+- Agrega relatório de tokens
+```
+
+---
+
+## 8. Logging de Contexto (CHUNK 2.4)
+
+```
+context_logger.py registra JSONL com cada execução:
+
+project_context.jsonl
+└── [
+    {"timestamp": "...", "phase": "pesquisa", "model": "Haiku",
+     "content_chars": 5000, "actual_tokens_used": 1250, "metadata": {...}},
+    {"timestamp": "...", "phase": "protótipo", "model": "Haiku",
+     "content_chars": 8000, "actual_tokens_used": 2000, "metadata": {...}},
+    ...
+  ]
+
+Análise agregada:
+- Por fase: {count, total_tokens, avg_tokens}
+- Por modelo: {count, total_tokens}
+- Alertas:
+  * ⚠️ Se fase > 25k tokens (warning)
+  * 🔴 Se fase > 35k tokens (crítico, MUST split)
+
+Relatório: context_usage_report.md
+├── Total tokens gastos
+├── Breakdown por fase + modelo
+├── Timeline de últimas 10 execuções
+└── Recomendações de split
+
+context_logger.sh chama Python lib com fallback para sem-Python.
+```
+
+---
+
+## 9. Métricas e Health Check
 
 ```
 Scripts agregam dados em `logs/`:
@@ -398,7 +463,7 @@ Dashboard simples em state.sh:
 
 ---
 
-## 9. Fluxo de Aprovação para Codegen
+## 10. Fluxo de Aprovação para Codegen
 
 ```
 spec_validator.sh: coverage < 90%

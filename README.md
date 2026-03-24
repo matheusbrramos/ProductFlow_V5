@@ -178,11 +178,11 @@ ProductFlow_V5/
 - [x] CHUNK 1.4 — Validação de Specs
 - [x] CHUNK 1.5 — Loop de Feedback
 
-### ✅ FASE 2: Context Rot Prevention (Parcial)
+### ✅ FASE 2: Context Rot Prevention (Completa)
 - [x] CHUNK 2.1 — Context Rot Detection
 - [x] CHUNK 2.2 — Orquestração de Modelos
-- [ ] CHUNK 2.3 — Subagentes Declarativos
-- [ ] CHUNK 2.4 — Logging de Contexto
+- [x] CHUNK 2.3 — Subagentes Declarativos
+- [x] CHUNK 2.4 — Logging de Contexto
 
 ### 🔲 FASE 3: Loop de Aprendizado (Planejado)
 - [ ] CHUNK 3.1 — Persistência de Decisões

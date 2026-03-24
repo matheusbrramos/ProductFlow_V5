@@ -175,6 +175,65 @@
 
 ---
 
+## FASE 2: Context Rot Prevention (Continued)
+
+### CHUNK 2.3 — Subagentes Declarativos
+
+#### Step 2.3.1: Implementar orchestrador de subagentes
+- **Ação:** Criar `scripts/lib/subagents_orchestrator.py` com classe SubagentsOrchestrator
+- **Tempo:** 1h
+- **Resultado:** Python lib que lê YAML config e executa múltiplos agentes em paralelo/sequência
+- **Artefato:** `scripts/lib/subagents_orchestrator.py`
+- **Teste:** Rodar com subagents.yaml e validar que executa paralelos + sequenciais
+
+#### Step 2.3.2: Criar shell wrapper script
+- **Ação:** Implementar `scripts/subagents_engine.sh` que orquestra execução
+- **Tempo:** 30min
+- **Resultado:** Script interativo que gerencia subagentes via YAML config
+- **Artefato:** `scripts/subagents_engine.sh`
+- **Teste:** Rodar `bash subagents_engine.sh` e validar que cria template subagents.yaml
+
+#### Step 2.3.3: Criar template de config
+- **Ação:** Gerar `subagents.yaml` com specs de agentes paralelos e sequenciais
+- **Tempo:** 20min
+- **Resultado:** YAML declarativo com modelo, context_budget, inputs/outputs de cada agente
+- **Artefato:** `subagents.yaml` (gerado automaticamente se não existir)
+- **Teste:** Validar estrutura YAML e que orchestrador consegue ler corretamente
+
+---
+
+### CHUNK 2.4 — Logging de Contexto
+
+#### Step 2.4.1: Implementar context logger
+- **Ação:** Criar `scripts/lib/context_logger.py` que registra context usage em JSONL
+- **Tempo:** 1h
+- **Resultado:** Python lib que loga tokens/chars por fase, agrupa por fase/modelo
+- **Artefato:** `scripts/lib/context_logger.py`
+- **Teste:** Testar logging de entry e análise de dados agregados
+
+#### Step 2.4.2: Criar interface de análise
+- **Ação:** Implementar métodos `analyze()` e `generate_report()` no context_logger
+- **Tempo:** 30min
+- **Resultado:** Análise em JSON + relatório markdown com warnings (⚠️ > 25k, 🔴 > 35k)
+- **Artefato:** Funções em `scripts/lib/context_logger.py`
+- **Teste:** Rodar análise e validar que identifica phases críticas
+
+#### Step 2.4.3: Criar shell wrapper script
+- **Ação:** Implementar `scripts/context_logger.sh` com fallback para quando Python não está disponível
+- **Tempo:** 30min
+- **Resultado:** Script que roda análise e gera `context_usage_report.md`
+- **Artefato:** `scripts/context_logger.sh`
+- **Teste:** Rodar sem Python e validar que cria template report
+
+#### Step 2.4.4: Integração com orchestration_engine
+- **Ação:** Modificar `orchestration_engine.sh` para chamar `context_logger.sh`
+- **Tempo:** 20min
+- **Resultado:** Após decidir modelo, sistema automaticamente analisa context risk
+- **Artefato:** Integração em `orchestration_engine.sh`
+- **Teste:** Rodar orchestration_engine.sh e validar que context_logger é chamado
+
+---
+
 ## Timeline de Implementação
 
 | Chunk | Semana | Duração | Prioridade |
@@ -186,5 +245,8 @@
 | 1.5 | Semana 3 | 1.5h | 🟢 Médio |
 | 2.1 | Semana 3-4 | 1.5h | 🟢 Médio |
 | 2.2 | Semana 4 | 1h | 🟢 Médio |
+| 2.3 | Semana 4-5 | 1.5h | 🟡 Alto |
+| 2.4 | Semana 5 | 2h | 🟡 Alto |
 
 **Total FASE 1:** ~9 horas de desenvolvimento
+**Total FASE 2:** ~7 horas de desenvolvimento (2.1-2.4)

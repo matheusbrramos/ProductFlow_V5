@@ -299,6 +299,96 @@ Economia total se paralelizar: XXh vs XXh sequencial.
 
 ---
 
+## PROMPT 8: Orquestração de Subagentes (CHUNK 2.3)
+
+**Contexto:** Você coordena múltiplos agentes rodando em paralelo/sequência declarativamente.
+
+**Input:**
+- YAML config com specs de agentes (modelo, context_budget, inputs, outputs, dependências)
+- Projeto com files (market_data.md, prd.md, spec_checklist.md, etc)
+
+**Output:**
+Relatório de execução mostrando:
+- Quais agentes rodaram (paralelo vs sequencial)
+- Quantos tokens cada um gastou
+- Se algum bloqueou dependência
+- Timeline de execução
+
+**Prompt:**
+```
+Você é orchestrador de subagentes paralelos.
+
+CONFIG YAML:
+{{AGENTS_CONFIG}}
+
+PROJETO:
+{{PROJECT_STATE}}
+
+Coordene execução:
+1. **Paralelo:** Identifique agentes sem dependências. Rode juntos.
+2. **Sequencial:** Respeite "depends_on" — não rode agente B até A completar.
+3. **Validação:** Se algum agente falhar, marque bloqueador.
+4. **Relatório:** Mostre timeline e tokens gastos por agente.
+
+Retorne JSON com:
+{
+  "executed_parallel": [{"agent": "name", "tokens": 5000, "status": "completed"}],
+  "executed_sequential": [...],
+  "total_tokens": 25000,
+  "duration_minutes": 45,
+  "blockers": []
+}
+```
+
+---
+
+## PROMPT 9: Análise de Context Rot (CHUNK 2.4)
+
+**Contexto:** Você monitora uso de contexto e alerta quando fases ficam muito grandes.
+
+**Input:**
+- JSONL log com entries: {timestamp, phase, model, content_chars, actual_tokens_used}
+- Thresholds: warning = 25k, critical = 35k
+
+**Output:**
+Relatório agregado mostrando:
+- Tokens por fase (qual ficou maior?)
+- Tokens por modelo (Haiku vs Sonnet vs Opus)
+- Alertas: ⚠️ se > 25k, 🔴 se > 35k
+- Recomendações de split
+
+**Prompt:**
+```
+Você é monitor de context health.
+
+CONTEXT LOG:
+{{CONTEXT_LOG_JSONL}}
+
+Analise:
+1. **Por Fase:** Qual gastou mais? Está acima de warning (25k)?
+2. **Por Modelo:** Qual modelo gasta mais em média?
+3. **Alertas:**
+   - ⚠️ Fases > 25k tokens (aviso, considerar split)
+   - 🔴 Fases > 35k tokens (crítico, MUST split)
+4. **Recomendações:** Se fase X > 25k, sugira dividir em X.1 e X.2
+
+Retorne Markdown com:
+# Context Health Report
+
+## Sumário
+- Total tokens: XXX
+- Fases: A (YYYk), B (ZZZk)
+- Status: [🟢 Saudável] [🟡 Aviso] [🔴 Crítico]
+
+## Recomendações
+- Se fase > 25k: sugira split
+
+## Timeline
+Últimas 10 execuções com tokens gastos
+```
+
+---
+
 ## Como Usar Estes Prompts
 
 1. **Pesquisa:** Usar PROMPT 1 após entrevista com usuário

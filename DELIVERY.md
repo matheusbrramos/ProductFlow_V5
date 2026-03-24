@@ -58,7 +58,7 @@ bash scripts/feedback_loop.sh  # Processa feedback (10min)
 
 ---
 
-## 🟡 FASE 2: Context Rot Prevention
+## ✅ FASE 2: Context Rot Prevention (Completa)
 
 ### ✅ CHUNK 2.1 — Context Rot Detector
 ```bash
@@ -72,6 +72,20 @@ bash scripts/orchestration_engine.sh
 ```
 **Decision Tree:** TAM + market_score → Haiku / Sonnet / Opus
 **Output:** `orchestration.md` com decisão justificada
+
+### ✅ CHUNK 2.3 — Subagentes Declarativos
+```bash
+bash scripts/subagents_engine.sh
+```
+**Orquestra:** Múltiplos agentes em paralelo/sequência via YAML config
+**Output:** `subagents.yaml` (config) + `subagents_report.md` (execution)
+
+### ✅ CHUNK 2.4 — Logging de Contexto
+```bash
+bash scripts/context_logger.sh
+```
+**Registra:** Token usage por fase em JSONL + análise agregada
+**Output:** `project_context.jsonl` (log) + `context_usage_report.md` (análise)
 
 ---
 
